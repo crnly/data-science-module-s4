@@ -1,0 +1,26 @@
+vars: {d2-config: {layout-engine: dagre; theme-id: 0}}
+direction: down
+prozess: "Data Science · Semester 4 · CRISP-DM" {
+  direction: down
+  p1: "1. Business Understanding\nFragestellung, Zielvariable und Gütemaße" {
+    link: "../data_science.ipynb#phase-1"
+  }
+  p2: "2. Data Understanding\nTrainingsdaten und Summenkonsistenz prüfen" {
+    link: "../data_science.ipynb#phase-2"
+  }
+  p3: "3. Data Preparation\nTraining / Validation nach IDs trennen\nLogistische Baseline und vier Aufbereitungsvarianten" {
+    link: "../data_science.ipynb#phase-3"
+  }
+  p4: "4. Modeling\nDrei Modelle, Feature Selection, begrenztes Tuning\nModellwahl auf festem Split; Sensitivität prüfen" {
+    link: "../data_science.ipynb#phase-4"
+  }
+  p5: "5. Evaluation\nFestes Modell auf allen 500 Testzeilen\nFehlerarten und Grenzen erklären" {
+    link: "../data_science.ipynb#phase-5"
+  }
+  p6: "6. Deployment\nNotebook, README und Dokumentation übergeben\nAusführung und Eingaben nachvollziehbar machen" {
+    link: "../data_science.ipynb#phase-6"
+  }
+  p1 -> p2 -> p3 -> p4 -> p5 -> p6
+  p3 -> p2: "Qualitätsbefunde berücksichtigen" {style.stroke-dash: 4}
+  p5 -> p1: "Ergebnisse an Projektfrage messen" {style.stroke-dash: 4}
+}

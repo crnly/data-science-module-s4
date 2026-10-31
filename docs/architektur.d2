@@ -1,0 +1,32 @@
+vars: {d2-config: {layout-engine: dagre; theme-id: 0}}
+direction: down
+raw: "Originale Trainingsdatei\n1.000 Zeilen" {shape: stored_data}
+audit: "Daten verstehen\nFehlwerte, Kopien, Stundenkonsistenz und Kennungen"
+prepare: "Fehlende Labels und Kopien entfernen\nGruppensplit nach ID: 780 Training / 196 Validation"
+train: "Training\nFür Aufbereitung, Modelle und interne CV"
+validation: "Validation\nFeste Zeilen für alle Varianten und die Auswahl"
+experiments: "Kandidaten auf Training fitten\nAufbereitung, drei Modelle und Feature Selection"
+tuning: "Tuning der zwei stärksten Familien\nDrei Gruppenfolds innerhalb des Trainingssatzes\nVorverarbeitung und Auswahl je Fold neu lernen"
+choose: "Kandidaten auf festem Split bewerten\nNach Macro-F1 und danach Accuracy auswählen"
+refit: "Gewählte vollständige Pipeline\nauf allen 976 Entwicklungszeilen refittieren"
+test: "Originale Testdatei\n500 Zeilen unverändert" {shape: stored_data}
+evaluation: "Finale Bewertung auf der Testdatei\nAccuracy, Macro-F1 und Konfusionsmatrix"
+output: "Ergebnisse direkt im Notebook\nBegründungen in der CRISP-DM-Prozessübersicht"
+raw -> audit -> prepare
+prepare -> train
+prepare -> validation
+train -> experiments
+train -> tuning: "Nur Trainingsdaten"
+experiments -> choose: "Gefittete Kandidaten"
+tuning -> choose: "Beste CV-Konfigurationen"
+validation -> choose: "Bewertungsdaten; kein CV-Training"
+choose -> refit
+train -> refit
+validation -> refit: "Erst nach Festschreibung"
+refit -> evaluation
+test -> evaluation: "Keine Auswahl anhand dieses Ergebnisses"
+evaluation -> output
+note: "465 gemeinsame IDs zwischen Originaldateien:\nIdentitätssemantik ungeklärt; Testauswertung unter Vorbehalt" {
+  shape: text
+}
+test -> note {style.stroke-dash: 4}
