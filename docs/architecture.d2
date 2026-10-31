@@ -1,0 +1,32 @@
+vars: {d2-config: {layout-engine: dagre; theme-id: 0}}
+direction: down
+raw: "Original training file\n1,000 rows" {shape: stored_data}
+audit: "Understand the data\nMissing values, duplicates, hour consistency and IDs"
+prepare: "Remove missing labels and duplicate observations\nGrouped split by ID: 780 training / 196 validation"
+train: "Training\nFor preparation, models and internal CV"
+validation: "Validation\nFixed rows for all variants and selection"
+experiments: "Fit candidates on training\nPreparation, three models and feature selection"
+tuning: "Tune the two strongest families\nThree grouped folds within the training set\nRelearn preprocessing and selection per fold"
+choose: "Evaluate candidates on the fixed split\nSelect by macro-F1, then accuracy"
+refit: "Refit the selected full pipeline\non all 976 development rows"
+test: "Original test file\n500 rows retained" {shape: stored_data}
+evaluation: "Final evaluation on the test file\nAccuracy, macro-F1 and confusion matrix"
+output: "Results directly in the notebook\nDecisions explained in the CRISP-DM process overview"
+raw -> audit -> prepare
+prepare -> train
+prepare -> validation
+train -> experiments
+train -> tuning: "Training data only"
+experiments -> choose: "Fitted candidates"
+tuning -> choose: "Best CV configurations"
+validation -> choose: "Evaluation data; no CV fitting"
+choose -> refit
+train -> refit
+validation -> refit: "Only after selection is fixed"
+refit -> evaluation
+test -> evaluation: "No selection based on this score"
+evaluation -> output
+note: "465 IDs shared across the original files:\nIdentity unresolved; interpret test scores with caution" {
+  shape: text
+}
+test -> note {style.stroke-dash: 4}

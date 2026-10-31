@@ -1,53 +1,52 @@
 # Data Science — Semester 4
 
-Aufarbeitung des Semesterprojekts SS 2026 an der HdM Stuttgart. Ziel ist die Klassifikation,
-ob eine Person das aktuelle Modell einer Sport-/Triathlon-Uhr nutzt.
+A portfolio adaptation of the summer 2026 semester project at HdM Stuttgart. The task is to
+classify whether a customer uses the latest model of a sports/triathlon watch.
 
-- [Notebook](data_science.ipynb): vollständige Analyse in sechs CRISP-DM-Kapiteln, mit kurzen
-  Markdown-Texten und allen Ergebnissen.
-- [CRISP-DM-Prozessübersicht](CRISP-DM-Prozessübersicht.md): ausführliche Begründungen,
-  Prozessdiagramm und technischer Datenfluss.
+- [Notebook](data_science.ipynb): the full analysis in six CRISP-DM chapters, with short
+  Markdown explanations and all results.
+- [CRISP-DM process overview](CRISP-DM-Process-Overview.md): methodological decisions,
+  process diagram and technical data flow.
 
-## Vorgehen
+## Approach
 
-Originaldaten prüfen → Training und Validation nach IDs trennen → logistische Ausgangsbaseline
-und vier Aufbereitungsvarianten vergleichen → drei Modelle, Feature Selection und begrenztes
-Tuning prüfen → festes Modell auf der gelieferten Testdatei bewerten.
+Inspect the original data → split training and validation by ID → compare an initial logistic
+baseline and four preparation variants → evaluate three models, feature selection and limited
+tuning → assess the fixed model on the provided test file.
 
-## Ergebnis
+## Results
 
-Gewählt wurde **Logistische Regression mit Feature Selection** und der Aufbereitung **Bereinigt**.
-Die Auswahl gilt für den festgelegten Validierungssplit. Eine zusätzliche Sensitivitätsprüfung
-zeigt, wie sich die Rangfolge bei anderen Aufteilungen verändert.
+The selected configuration is **logistic regression with feature selection** and **Cleaned**
+preparation. This choice applies to the fixed validation split. An additional sensitivity
+check shows how the ranking changes across other splits.
 
-| Gelieferter Kurs-Test · 500 Zeilen | Wert |
+| Provided course test · 500 rows | Value |
 |---|---:|
 | Accuracy | 0.790 |
 | Macro-F1 | 0.780 |
 
-465 Kennungen kommen in beiden Originaldateien vor; ihre Bedeutung über die Dateien hinweg
-ist ungeklärt. Die Ergebnisse sind daher kein uneingeschränkter unabhängiger Leistungsnachweis
-und keine Prognose zukünftiger Käufe.
+465 identifiers occur in both original files; their meaning across files is unresolved.
+These results therefore do not establish independent performance or predict future purchases.
 
-## Lokal ausführen
+## Run locally
 
-Im Terminal in den Projektordner wechseln und die Umgebung anlegen; geprüft mit Python 3.14.4:
+Clone the repository and create an environment; verified with Python 3.14.4:
 
 ```bash
+git clone https://github.com/crnly/data-science-module-s4.git
 cd data-science-module-s4
 python3.14 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-`data_science.ipynb` in Jupyter oder VS Code öffnen, den Python-Interpreter aus `.venv` als
-Kernel auswählen und „Restart Kernel and Run All“ verwenden. Das Arbeitsverzeichnis muss
-die Repositorywurzel sein.
-Falls noch kein Notebook-Editor vorhanden ist: `python -m pip install jupyterlab`, danach
-`jupyter lab`. Die beiden Original-CSV-Dateien liegen unverändert in `data/`.
+Open `data_science.ipynb` in Jupyter or VS Code, select the Python interpreter from `.venv`
+as the kernel and use “Restart Kernel and Run All”. The working directory must be the
+repository root. If you need a notebook editor, run `python -m pip install jupyterlab`, then
+`jupyter lab`. Both original CSV files are included unchanged in `data/`.
 
-## Einordnung
+## Scope
 
-Die Analyse klassifiziert den beobachteten Nutzungsstatus anhand der vorliegenden Daten.
-Code und Ergebnisse sind vollständig im Notebook enthalten; die Prozessübersicht erläutert
-die methodischen Entscheidungen. Eine Lizenz wurde noch nicht gewählt.
+The analysis classifies observed model usage using the available data. All code and results
+are contained in the notebook; the process overview explains the methodological decisions.
+A license has not yet been selected.
