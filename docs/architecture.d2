@@ -3,8 +3,9 @@ direction: down
 train: "train_task3.csv\n585 rows · 47 features + target" {shape: stored_data}
 validation: "validation_task3.csv\n196 rows · supplied validation split" {shape: stored_data}
 test: "final_test_task3.csv\n500 rows · supplied final test" {shape: stored_data}
-experiments: "Fit on training only\nEight baselines · random-forest feature selection"
-tuning: "Compact GridSearchCV\nFive stratified training folds\nRefit feature selection inside each fold"
+experiments: "Fit on training only\n8 baselines + 8 selected-feature variants"
+folds: "Internal CV within the 585 training rows\nFive stratified group folds\nKeep identical observations together"
+tuning: "Compact GridSearchCV\nRefit feature selection inside each fold\nChoose parameters by CV weighted F1"
 choose: "Compare all stages on validation\nWeighted F1 → accuracy → absolute F1 gap"
 refit: "Refit the selected full pipeline\nTraining + validation · 781 rows"
 evaluation: "Evaluate the fixed model on final test\nAccuracy · weighted F1 · classification errors"
@@ -12,7 +13,7 @@ results: "Results in data_science.ipynb\nDecisions in the CRISP-DM overview"
 artifact: "model.pkl\nFitted pipeline · schema · three prepared examples"
 app: "app.py · local Gradio extension\nSelect example · optional edits · predict"
 train -> experiments
-train -> tuning
+train -> folds -> tuning
 experiments -> choose
 tuning -> choose
 validation -> choose: "Compare; no fitting"
@@ -25,5 +26,5 @@ evaluation -> results
 refit -> artifact
 test -> artifact: "Three feature rows; no targets"
 artifact -> app: "Load; no retraining"
-note: "Prepared exports: earlier preprocessing\nand person-level independence cannot be verified" {shape: text}
+note: "Prepared Task-3 inputs: inherited preprocessing limits\nPerson-level independence remains unverified" {shape: text}
 train -> note {style.stroke-dash: 4}

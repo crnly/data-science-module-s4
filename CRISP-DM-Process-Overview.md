@@ -1,100 +1,179 @@
 # CRISP-DM Process Overview
 
-This project adapts the original semester **Task 3: Modeling & Validation** into one compact
-[notebook](data_science.ipynb). The original model families and experiment stages remain the
-starting point. CRISP-DM provides the structure; Gradio is a small deployment extension.
+This project adapts the semester **Task 3: Modeling & Validation** using three supplied,
+prepared CSV files. The [notebook](data_science.ipynb) contains the executable analysis;
+this document explains the purpose, decisions and handover between its six CRISP-DM phases.
+Gradio adds a local interface to the resulting model.
 
 ![CRISP-DM process](docs/process.svg)
 
 [D2 source](docs/process.d2)
 
+Read each phase as **goal → steps → reason → output**. The diagrams show sequence and data
+flow. Dashed return arrows represent possible methodological reviews; they are not automatic
+loops in the code. The notebook executes from top to bottom.
+
 ## 1. Business Understanding
 
-Classify `User of latest model`: **0 = older watch model, 1 = latest model**. The task concerns
-observed usage, not future purchases or causal effects.
+**Goal.** Distinguish customers using the latest sports/triathlon watch model from those using
+an older model. `User of latest model` is the target: **0 = older, 1 = latest**. It describes
+observed usage; the data does not establish future purchase intent or causal effects.
 
-Select by validation **weighted F1**, retaining the semester workflow's main F1 definition.
-Use accuracy as the first tie-breaker and the smaller absolute train–validation F1 gap as the
-second. Weighted F1 weights each class by its frequency; the classification report also shows
-each class separately. There is no target score and no model chosen in advance.
+**Steps.** Define the target and selection criteria before comparing candidates. Use
+validation **weighted F1**, then accuracy and the smaller absolute train–validation F1 gap
+to break ties. A false positive labels an older-model user as a latest-model user; a false
+negative misses a latest-model user. No unsupported business cost is assigned to either error.
+
+**Reason.** Weighted F1 preserves the semester workflow's metric and weights class-specific
+F1 by class frequency. Accuracy adds the proportion classified correctly. Per-class results
+later reveal errors hidden by averages. No classifier or target score is prescribed.
+
+**Output → Phase 2.** A defined classification task and an explicit comparison rule. Next,
+check what information the supplied files actually contain.
 
 ## 2. Data Understanding
 
-Use the three original prepared files unchanged:
+**Goal.** Understand the prepared inputs, their limitations and the distinct roles of the
+three files before fitting models.
 
-| File | Rows | Role |
+**Steps.** Inspect dimensions, a training preview, descriptive statistics and development
+class counts. Read the common schema: **47 features plus the target**, comprising eleven
+transformed numeric features (`num__`) and 36 one-hot category columns (`cat__`).
+
+| Supplied file | Rows | Role in this project |
 |---|---:|---|
-| `train_task3.csv` | 585 | Fit candidates and run internal CV |
-| `validation_task3.csv` | 196 | Compare candidates |
-| `final_test_task3.csv` | 500 | Evaluate the fixed configuration |
+| `train_task3.csv` | 585 | Learn candidates and tune parameters with internal CV |
+| `validation_task3.csv` | 196 | Compare candidates after fitting |
+| `final_test_task3.csv` | 500 | Evaluate the configuration after selection |
 
-Each file has **47 features plus the target**: eleven transformed numeric features and 36
-one-hot columns. Negative transformed values are valid. The notebook displays training
-summaries and development class counts; it does not compare test model outcomes at this stage.
+**Reason.** These files are already prepared Task-3 inputs. A negative transformed age value,
+for example, is a value on a transformed scale; it is not evidence of a negative age in years.
+Repeating raw-data cleaning on these numbers would misinterpret them.
+
+**Output → Phase 3.** A known feature schema and a fixed outer split. Next, validate the
+inputs and prepare their use without replacing the original semester data.
 
 ## 3. Data Preparation
 
-Preserve the existing split. Separate the target from the feature columns and check identical
-schemas, finite numeric values and binary labels. Do not repeat imputation, encoding, scaling
-or outlier removal on these already prepared values.
+**Goal.** Turn the supplied tables into checked model inputs while retaining their existing
+rows and split.
 
-Training and test each contain one duplicate feature row; validation contains none. Retain
-them to preserve the supplied data basis. No identical feature rows are found across the three
-files. This check cannot establish that different rows represent different people.
+**Steps.** Separate the target from the 47 features. Check matching columns, finite numeric
+values, binary labels and identical feature rows. All three CSV files remain unchanged;
+there is no new outer split, imputation, scaling or encoding.
 
-The earlier preprocessing parameters and person identifiers are not present in these exports.
-Consequently, this repository cannot verify whether earlier transformations were learned only
-from training data. Its results are conditional on the supplied preparation.
+Training and test each contain one duplicate feature row; validation contains none. There
+are no identical feature rows across files. Assign identical training feature rows the same
+group signature for internal CV. Retain both copies in the original data and in final fitting.
+
+**Reason.** Grouping prevents a tuning fold from learning from one copy while evaluating the
+other. It preserves the supplied files. A feature signature only detects identical inputs;
+it does not identify different observations of the same person. Person identifiers are absent.
+
+**Inherited preparation.** A local comparison links the training and validation features to
+the archived Task-2 exports, up to CSV rounding. The finite test features also match that
+export; two missing age values in the Task-2 export are filled in the supplied Task-3 file.
+The archived Task-2 notebook learns some imputation steps, including a date median,
+regression-based imputation and category modes, before its outer split. Its scaler and encoder
+are fitted afterward on training. The exact historical execution and all export steps are
+not fully documented in the supplied files.
+
+This is a concrete upstream leakage concern. The present CV cannot undo preparation already
+learned before its folds were created. Evaluation is conditional on these provided features;
+we do not claim an independently validated pipeline starting from raw data.
+
+**Output → Phase 4.** Checked `X` and `y` tables for the three supplied splits, plus training
+group signatures. Next, compare models using a consistent evaluation procedure.
 
 ## 4. Modeling
 
-Compare the semester project's eight model families: decision tree, random forest, gradient
-boosting, bagging, logistic regression, Gaussian Naive Bayes, kNN and MLP. A majority classifier
-provides an additional reference.
+**Goal.** Compare the semester model families and determine which configuration to carry
+forward under the stated selection rule.
 
-Run baseline models on all 47 features. Then rank features with a training-only random forest
-and keep the smallest leading set reaching 80% cumulative importance. Compare all eight
-families again on this selection.
+**Steps.** Use decision tree, random forest, gradient boosting, bagging, logistic regression,
+Gaussian Naive Bayes, kNN and MLP. A majority classifier supplies a simple reference. The
+eight families each pass through three stages, yielding **24 candidates for validation comparison**:
 
-Tune all eight families with compact parameter grids and five stratified training folds
-(seed 42). Feature selection is part of the pipeline and is relearned within each fold;
-validation and test are not used to fit these stages. The full grids and model parameters
-are visible in the notebook. The MLP iteration limit is increased to 2,000. Some fits still
-reach that limit; convergence-warning counts are reported in the comparison and tuning tables.
-These MLP results therefore reflect the chosen optimization budget. Other warning types remain visible.
+1. **Baseline:** fit on all 47 prepared features and evaluate on the supplied validation file.
+2. **Feature selection:** rank features with a training-only random forest; keep the smallest
+   leading set reaching 80% cumulative importance. Fit each family again using this selection.
+3. **Tuning:** search compact parameter grids for each family with the feature selector
+   inside the pipeline. Choose each family's parameters by mean CV weighted F1, then evaluate
+   that fitted configuration on the supplied validation file.
 
-Select across **baseline, feature-selection and tuned** candidates using the same validation
-rows. Tuning does not automatically displace a stronger baseline. Reusing validation for
-several comparisons makes these development scores optimistic; small ranking differences
-are not evidence of general superiority.
+**Reason.** The stages make the effect of the original experiment steps visible. The 80%
+threshold follows the semester approach; it is not claimed to be an optimal universal value.
+Small grids keep the analysis practical. A tuned candidate can lose to its baseline, so all
+three stages remain eligible for final selection.
+
+The two uses of validation have different jobs:
+
+| Comparison | Data used | Decision |
+|---|---|---|
+| Internal five-fold CV | Only the 585 training rows | Hyperparameters within a family |
+| Supplied validation file | The same 196 rows for all candidates | Final family and stage |
+
+In five-fold cross-validation, each parameter setting is fitted on four parts and scored on
+the held-out fifth part. Repeat this for all five parts and compare the mean scores. These
+held-out parts belong to the training file; they are separate from the supplied validation file.
+
+`StratifiedGroupKFold` creates five folds with seed 42, approximately preserving class
+proportions while keeping identical feature groups together. Each search uses the same
+folds. The notebook checks that no feature group crosses a fold boundary. The selector and
+classifier are relearned inside each fold. This protects the newly fitted stages; inherited
+preparation remains subject to the limitations in Phase 3.
+
+MLP has an iteration limit of 2,000. Convergence-warning counts are displayed for candidate
+fits and searches, so an exhausted optimization budget is visible. Other warnings remain visible.
+Reusing the supplied validation file for 24 comparisons makes its scores development results;
+small ranking differences do not establish general superiority.
+
+**Output → Phase 5.** One chosen family, stage and parameter configuration. The test score
+does not participate in that choice. Next, evaluate the fixed configuration after refitting.
 
 ## 5. Evaluation
 
-Refit the selected pipeline on all **781 training-plus-validation rows**. If it contains a
-selector, relearn that selector too; the final feature set can therefore differ from the
-training-only selection. Evaluate the resulting model on all **500 final-test rows**.
+**Goal.** Assess the selected configuration on the supplied final test and explain its errors.
+
+**Steps.** Refit the selected pipeline on all **781 training-plus-validation rows**. If it
+includes a selector, relearn that selector too. Its chosen features can change with the larger
+fitting set. Apply the refitted pipeline to all **500 final-test rows**.
 
 Report accuracy, weighted F1, the per-class classification report and a confusion matrix.
-The notebook states the selected candidate and how many latest-model users it misses.
-The [README](README.md#data-and-results) summarizes the current run.
+Read its rows as actual classes and columns as predictions: the off-diagonal entries show
+false positives and false negatives. The notebook also counts missed latest-model users.
 
-This test file has been evaluated in earlier project versions. These are reproducible course
-results, not a fresh untouched benchmark. Unverified earlier preprocessing, absent person
-identifiers and unclear feature timing limit conclusions about new customers.
+**Reason.** Once configuration selection is complete, validation rows can contribute to the
+final fit. The comparison table distinguishes the earlier validation score from the final
+test score after this refit. The test is used for assessment in this run, not another round
+of parameter selection. It has been evaluated in earlier project versions, so it is not a
+fresh untouched benchmark. Missing person identifiers, unclear feature timing and inherited
+preparation limit conclusions about new customers.
+
+**Output → Phase 6.** A fitted model, measured errors and stated limitations. The
+[README](README.md#data-and-results) summarizes the current run. Next, export exactly the
+evaluated model for the demonstration.
 
 ## 6. Deployment
 
-Export `model.pkl` with the fitted pipeline, its input schema, environment versions, file
-hashes and three original test feature rows without target labels. Reload it and check all
-500 predictions against the evaluated model. Verify that all three input files remain unchanged.
+**Goal.** Make the evaluated model reproducible and explorable through a small local demo.
 
-The local Gradio app loads this artifact without retraining. It offers an example selector,
-a prediction and an optional prepared-feature editor. Numeric entries use the existing
-transformed scale; one-hot values remain binary with at most one active category per group.
-Edits explore model responses and do not imply causal effects.
+**Steps.** Export `model.pkl` with the fitted pipeline, input schema, environment versions,
+input-file hashes and three original test feature rows without labels. Reload it and check
+that all 500 predictions match the evaluated model. Verify the three CSV checksums are unchanged.
 
-The notebook contains all analysis and training code. `app.py` only provides the interface
-and input checks. `pyproject.toml` and `uv.lock` define the reproducible environment.
+The Gradio app loads that artifact without retraining. Select an example and run a prediction;
+an initially collapsed editor offers optional changes to the prepared values. Its numeric
+inputs retain the transformed scale. One-hot values must be binary with at most one active
+category per group. Editing inputs explores model responses and does not demonstrate causality.
+
+**Reason.** Separating training from the interface keeps the demonstration tied to the
+evaluated model. `pyproject.toml` and `uv.lock` define its environment. The notebook remains
+the single place for analysis and training code; `app.py` supplies input checks and the UI.
+
+**Output.** A locally runnable demonstration and a reproducible notebook. If the analysis
+changes later, rerun the notebook, inspect the results and regenerate the artifact together.
+Merely restarting Gradio does not train a new model.
 
 ![Technical data flow](docs/architecture.svg)
 

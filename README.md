@@ -13,6 +13,7 @@ three prepared CSV files and their existing training, validation and test split.
 Check the supplied data → compare the original eight model families → apply random-forest
 feature selection → run compact hyperparameter searches → select using validation weighted F1
 → refit on training plus validation → evaluate on the final test file.
+Internal cross-validation keeps identical training observations in the same group.
 
 Both baseline and optimized candidates remain eligible. The goal is a clear, reproducible
 semester analysis; no particular score or model is required.
@@ -26,17 +27,18 @@ semester analysis; no particular score or model is required.
 | `final_test_task3.csv` | 500 | Evaluation after model selection |
 
 All three CSV files are unchanged copies of the semester files. Each contains 47 prepared
-features and the target `User of latest model`. No new split or raw-data preparation is added.
+features and the target `User of latest model`. The supplied outer split is retained; no raw-data preparation is added.
 
-Selected in the current run: **Gradient boosting / Tuned**.
+Selected in the current run: **kNN / Tuned**.
 
 | Final test · 500 rows | Value |
 |---|---:|
-| Accuracy | 0.752 |
-| Weighted F1 | 0.752 |
+| Accuracy | 0.738 |
+| Weighted F1 | 0.731 |
 
-These are course-data results. Earlier preprocessing cannot be audited from the exports alone,
-person identifiers are absent, and the test file has been evaluated in earlier project versions.
+These are course-data results. Archived Task-2 preparation includes imputation before splitting;
+its full historical execution cannot be reconstructed from the exports alone.
+Person identifiers are absent, and the test file has been evaluated in earlier project versions.
 The results do not establish independent performance on new customers or forecast purchases.
 
 ## Run locally

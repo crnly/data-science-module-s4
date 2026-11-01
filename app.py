@@ -66,7 +66,7 @@ def build_demo():
                     f"Stage: **{bundle['stage']}** · Training + validation: **781 rows**\n\n"
                     "Select an example and run the saved model. The notebook contains the full model comparison."
                 )
-                with gr.Accordion("Prepared features / optional editing", open=True):
+                with gr.Accordion("Prepared features / optional editing", open=False):
                     gr.Markdown(
                         "`num__` values are already transformed, not raw measurements. "
                         "`cat__` values are one-hot categories (0 or 1). "
