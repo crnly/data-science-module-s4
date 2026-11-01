@@ -30,3 +30,8 @@ note: "465 IDs shared across the original files:\nIdentity unresolved; interpret
   shape: text
 }
 test -> note {style.stroke-dash: 4}
+artifact: "model.pkl\nComplete inference pipeline and three examples"
+app: "Local Gradio demo · app.py\nSelect example, edit raw features and predict"
+refit -> artifact: "Model and feature preparation"
+test -> artifact: "Three examples; no target labels"
+artifact -> app: "Load; no retraining"

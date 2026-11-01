@@ -277,14 +277,53 @@ data and do not support claims about future purchases or causal effects.
 
 ### Deliver and reproduce the analysis
 
-The handover consists of the executable notebook, README, this process overview and the two
-D2 diagrams. All code, result tables and figures are contained in the notebook. Required
-Python packages are listed in `requirements.txt`.
+The handover consists of the executable notebook, a small Gradio app, the saved model,
+README, this process overview and two D2 diagrams. All analysis and training code, result
+tables and figures remain in the notebook. Dependencies are declared in `pyproject.toml`;
+`uv.lock` fixes the complete resolved environment. Run `uv sync --locked` to create `.venv`.
 
-Use the repository root as the working directory and the interpreter from `.venv` as the
-notebook kernel. Restart the kernel and run all cells in order. The final cell checks retained
-test rows, separation of internal groups and unchanged input files. SHA-256 checksums and
-package versions are also displayed.
+Use the repository root as the working directory and `.venv` as the notebook kernel.
+Restart the kernel and run all cells in order. The final checks verify retained test rows,
+separation of internal groups and unchanged input files. SHA-256 checksums and package
+versions are displayed.
+
+### Export the complete prediction pipeline
+
+The final notebook cell wraps `make_features()` and the fitted model pipeline in a single
+inference pipeline. It accepts the 19 raw input fields without an ID or target. Fixed cleaning
+and date conversion therefore travel with imputation, encoding, feature selection and the
+classifier. The feature builder tolerates omitted ID and target columns without changing
+training or evaluation behavior.
+
+`cloudpickle` saves this pipeline as `model.pkl`, together with input names, numeric types,
+training-set category choices, package and Python versions, and the first three original
+test customers for the demo. Their target labels are excluded; their IDs only label the
+example selector and are not model inputs. Using examples from this already evaluated course
+file is a demonstration, not another independent performance test.
+
+Export checks that all 500 test predictions exactly match the evaluated model. The saved
+pipeline is also loaded in a separate Python process and compared with the app's input path.
+The artifact uses notebook-defined Python functions, so use Python 3.14 and the locked
+versions. Rerunning the notebook rebuilds the artifact from the original data.
+
+### Run the local Gradio demo
+
+Start `uv run python app.py` and open the local URL printed in the terminal. The app loads
+the saved model without fitting or selecting models. Its English interface provides:
+
+- Three original example customers and a reset button.
+- Editable customer, training, watch and service fields.
+- A prediction of **Older model** or **Latest model**.
+
+Form values are parsed into the saved input schema. All feature engineering stays in the
+exported pipeline. Missing values use the existing training-based imputation, while unknown
+categories follow the existing encoding rule. An entirely empty form is rejected. Editing
+inputs clears the previous result so it cannot be mistaken for a prediction on the new values.
+No confidence percentage is displayed; the project does not establish calibrated confidence.
+
+Inputs are not written to disk. The demo illustrates the fixed course model and inherits the
+limitations described in Phase 5. GitHub contains the source and model artifact; the app runs
+locally. Public application hosting is a separate step.
 
 ### Data flow and architecture
 
@@ -294,7 +333,8 @@ package versions are also displayed.
 
 The architecture separates data inspection, model development and final evaluation.
 Cross-validation uses only the training branch. After selection, the chosen pipeline is
-refitted on training plus validation; the test file feeds only the final evaluation.
+refitted on training plus validation. The test file supplies the final evaluation and three
+unlabeled demo examples. The exported model is then loaded by the app for prediction.
 
 Regenerate the diagrams with the D2 CLI:
 
@@ -309,4 +349,7 @@ d2 docs/architecture.d2 docs/architecture.svg
 
 - [CRISP-DM process model](https://www.ibm.com/docs/en/SS3RA7_19.0.0/pdf/ModelerCRISPDM.pdf)
 - [scikit-learn: Common pitfalls](https://scikit-learn.org/stable/common_pitfalls.html)
+- [Gradio](https://github.com/gradio-app/gradio)
+- [scikit-learn: Model persistence](https://scikit-learn.org/stable/model_persistence.html)
+- [uv project workflow](https://docs.astral.sh/uv/guides/projects/)
 - [D2 documentation](https://d2lang.com/tour/intro/)
