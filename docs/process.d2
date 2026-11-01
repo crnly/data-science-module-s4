@@ -1,26 +1,14 @@
 vars: {d2-config: {layout-engine: dagre; theme-id: 0}}
 direction: down
-process: "Data Science · Semester 4 · CRISP-DM" {
+process: "Semester Task 3 · CRISP-DM" {
   direction: down
-  p1: "1. Business Understanding\nQuestion, target and evaluation metrics" {
-    link: "../data_science.ipynb#phase-1"
-  }
-  p2: "2. Data Understanding\nInspect training data and consistency of total hours" {
-    link: "../data_science.ipynb#phase-2"
-  }
-  p3: "3. Data Preparation\nSplit training / validation by ID\nLogistic baseline and four preparation variants" {
-    link: "../data_science.ipynb#phase-3"
-  }
-  p4: "4. Modeling\nThree models, feature selection, limited tuning\nSelect on the fixed split; check sensitivity" {
-    link: "../data_science.ipynb#phase-4"
-  }
-  p5: "5. Evaluation\nFixed model on all 500 test rows\nExplain error types and limitations" {
-    link: "../data_science.ipynb#phase-5"
-  }
-  p6: "6. Deployment\nExport complete prediction pipeline\nRun the local Gradio demo with uv" {
-    link: "../data_science.ipynb#phase-6"
-  }
+  p1: "1. Business Understanding\nWatch model usage · weighted F1 and accuracy" {link: "../data_science.ipynb#phase-1"}
+  p2: "2. Data Understanding\nInspect the three prepared semester files" {link: "../data_science.ipynb#phase-2"}
+  p3: "3. Data Preparation\nKeep the supplied split · check schema and values\nSeparate features and target" {link: "../data_science.ipynb#phase-3"}
+  p4: "4. Modeling\nEight model families · feature selection · compact tuning\nSelect across all stages on validation" {link: "../data_science.ipynb#phase-4"}
+  p5: "5. Evaluation\nRefit on training + validation · evaluate 500 test rows\nExplain errors and limitations" {link: "../data_science.ipynb#phase-5"}
+  p6: "6. Deployment\nExport model.pkl · local Gradio extension\nReproduce with uv" {link: "../data_science.ipynb#phase-6"}
   p1 -> p2 -> p3 -> p4 -> p5 -> p6
-  p3 -> p2: "Review quality findings" {style.stroke-dash: 4}
-  p5 -> p1: "Assess results against the project question" {style.stroke-dash: 4}
+  p3 -> p2: "Review data checks" {style.stroke-dash: 4}
+  p5 -> p1: "Review the project objective" {style.stroke-dash: 4}
 }

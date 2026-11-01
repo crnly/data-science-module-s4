@@ -1,33 +1,43 @@
 # Data Science — Semester 4
 
-A portfolio adaptation of the summer 2026 semester project at HdM Stuttgart. The task is to
-classify whether a customer uses the latest model of a sports/triathlon watch.
+A compact portfolio adaptation of the semester project's **Task 3: Modeling & Validation**.
+Classify whether a customer uses the latest sports/triathlon watch model using the original
+three prepared CSV files and their existing training, validation and test split.
 
-- [Notebook](data_science.ipynb): the full analysis in six CRISP-DM chapters, with short
-  Markdown explanations and all results.
-- [Gradio demo](app.py): try the fixed model with three original example customers and editable inputs.
-- [CRISP-DM process overview](CRISP-DM-Process-Overview.md): methodological decisions,
-  process diagram and technical data flow.
+- [Notebook](data_science.ipynb): all analysis and code in six short CRISP-DM phases.
+- [Process overview](CRISP-DM-Process-Overview.md): decisions, limitations and D2 diagrams.
+- [Gradio demo](app.py): run the saved model on three original test examples; optionally edit prepared features.
 
 ## Approach
 
-Inspect the original data → split training and validation by ID → compare an initial logistic
-baseline and four preparation variants → evaluate three models, feature selection and limited
-tuning → assess the fixed model on the provided test file.
+Check the supplied data → compare the original eight model families → apply random-forest
+feature selection → run compact hyperparameter searches → select using validation weighted F1
+→ refit on training plus validation → evaluate on the final test file.
 
-## Results
+Both baseline and optimized candidates remain eligible. The goal is a clear, reproducible
+semester analysis; no particular score or model is required.
 
-The selected configuration is **logistic regression with feature selection** and **Cleaned**
-preparation. This choice applies to the fixed validation split. An additional sensitivity
-check shows how the ranking changes across other splits.
+## Data and results
 
-| Provided course test · 500 rows | Value |
+| File in `data/` | Rows | Purpose |
+|---|---:|---|
+| `train_task3.csv` | 585 | Training and internal cross-validation |
+| `validation_task3.csv` | 196 | Candidate comparison and selection |
+| `final_test_task3.csv` | 500 | Evaluation after model selection |
+
+All three CSV files are unchanged copies of the semester files. Each contains 47 prepared
+features and the target `User of latest model`. No new split or raw-data preparation is added.
+
+Selected in the current run: **Gradient boosting / Tuned**.
+
+| Final test · 500 rows | Value |
 |---|---:|
-| Accuracy | 0.790 |
-| Macro-F1 | 0.780 |
+| Accuracy | 0.752 |
+| Weighted F1 | 0.752 |
 
-465 identifiers occur in both original files; their meaning across files is unresolved.
-These results therefore do not establish independent performance or predict future purchases.
+These are course-data results. Earlier preprocessing cannot be audited from the exports alone,
+person identifiers are absent, and the test file has been evaluated in earlier project versions.
+The results do not establish independent performance on new customers or forecast purchases.
 
 ## Run locally
 
@@ -41,26 +51,16 @@ uv run python app.py
 ```
 
 Open the local URL printed in the terminal, usually `http://127.0.0.1:7860`.
-Select an example customer, edit any values and click **Run prediction**.
-The app loads the included `model.pkl`; it does not retrain the model. Input data is not saved.
-The demo is local; GitHub hosts the code, not a running Python service.
+Select a prepared example and click **Run prediction**. Optional edits use the transformed
+numeric and one-hot values from the supplied files, not raw customer measurements.
+**Reset example** restores the original values. The app loads `model.pkl` without retraining;
+it does not save inputs. GitHub hosts the source; the demo runs locally.
 
-### Reproduce the analysis
+To reproduce the analysis, open `data_science.ipynb` in VS Code or Jupyter, select `.venv`
+as the Python kernel, use the repository root as the working directory and run all cells.
+The notebook also regenerates `model.pkl`. For a notebook editor:
+`uv run --with jupyterlab jupyter lab`.
 
-Open `data_science.ipynb` in VS Code or Jupyter, select the Python interpreter from `.venv`
-as the kernel and run all cells in order. Use the repository root as the working directory.
-If you need a notebook editor, run `uv run --with jupyterlab jupyter lab`.
-
-The notebook regenerates `model.pkl`, including feature preparation and three original
-example rows without their target labels. Before export, all 500 predictions are checked
-against the evaluated model. Both original CSV files remain unchanged in `data/`.
-
-Dependencies are declared in `pyproject.toml` and resolved in `uv.lock`. Verified with
-Python 3.14.4; use Python 3.14 and the locked environment when loading the saved model.
-
-## Scope
-
-The analysis classifies observed model usage using the available data. All analysis and training
-code and results are contained in the notebook. The app provides a small prediction interface;
-the process overview explains the methodological decisions.
+Dependencies are declared in `pyproject.toml` and locked in `uv.lock`. Verified with Python
+3.14.4; use the locked Python 3.14 environment for the saved model.
 A license has not yet been selected.

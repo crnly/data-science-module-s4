@@ -1,37 +1,29 @@
 vars: {d2-config: {layout-engine: dagre; theme-id: 0}}
 direction: down
-raw: "Original training file\n1,000 rows" {shape: stored_data}
-audit: "Understand the data\nMissing values, duplicates, hour consistency and IDs"
-prepare: "Remove missing labels and duplicate observations\nGrouped split by ID: 780 training / 196 validation"
-train: "Training\nFor preparation, models and internal CV"
-validation: "Validation\nFixed rows for all variants and selection"
-experiments: "Fit candidates on training\nPreparation, three models and feature selection"
-tuning: "Tune the two strongest families\nThree grouped folds within the training set\nRelearn preprocessing and selection per fold"
-choose: "Evaluate candidates on the fixed split\nSelect by macro-F1, then accuracy"
-refit: "Refit the selected full pipeline\non all 976 development rows"
-test: "Original test file\n500 rows retained" {shape: stored_data}
-evaluation: "Final evaluation on the test file\nAccuracy, macro-F1 and confusion matrix"
-output: "Results directly in the notebook\nDecisions explained in the CRISP-DM process overview"
-raw -> audit -> prepare
-prepare -> train
-prepare -> validation
+train: "train_task3.csv\n585 rows · 47 features + target" {shape: stored_data}
+validation: "validation_task3.csv\n196 rows · supplied validation split" {shape: stored_data}
+test: "final_test_task3.csv\n500 rows · supplied final test" {shape: stored_data}
+experiments: "Fit on training only\nEight baselines · random-forest feature selection"
+tuning: "Compact GridSearchCV\nFive stratified training folds\nRefit feature selection inside each fold"
+choose: "Compare all stages on validation\nWeighted F1 → accuracy → absolute F1 gap"
+refit: "Refit the selected full pipeline\nTraining + validation · 781 rows"
+evaluation: "Evaluate the fixed model on final test\nAccuracy · weighted F1 · classification errors"
+results: "Results in data_science.ipynb\nDecisions in the CRISP-DM overview"
+artifact: "model.pkl\nFitted pipeline · schema · three prepared examples"
+app: "app.py · local Gradio extension\nSelect example · optional edits · predict"
 train -> experiments
-train -> tuning: "Training data only"
-experiments -> choose: "Fitted candidates"
-tuning -> choose: "Best CV configurations"
-validation -> choose: "Evaluation data; no CV fitting"
+train -> tuning
+experiments -> choose
+tuning -> choose
+validation -> choose: "Compare; no fitting"
 choose -> refit
 train -> refit
-validation -> refit: "Only after selection is fixed"
+validation -> refit: "After selection"
 refit -> evaluation
-test -> evaluation: "No selection based on this score"
-evaluation -> output
-note: "465 IDs shared across the original files:\nIdentity unresolved; interpret test scores with caution" {
-  shape: text
-}
-test -> note {style.stroke-dash: 4}
-artifact: "model.pkl\nComplete inference pipeline and three examples"
-app: "Local Gradio demo · app.py\nSelect example, edit raw features and predict"
-refit -> artifact: "Model and feature preparation"
-test -> artifact: "Three examples; no target labels"
+test -> evaluation: "No selection based on test scores"
+evaluation -> results
+refit -> artifact
+test -> artifact: "Three feature rows; no targets"
 artifact -> app: "Load; no retraining"
+note: "Prepared exports: earlier preprocessing\nand person-level independence cannot be verified" {shape: text}
+train -> note {style.stroke-dash: 4}

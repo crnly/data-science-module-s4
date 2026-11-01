@@ -11,60 +11,36 @@ with Path(__file__).with_name("model.pkl").open("rb") as model_file:
     bundle = cloudpickle.load(model_file)
 
 COLUMNS = bundle["columns"]
-NUMERIC = bundle["numeric_columns"]
-EXAMPLES = dict(zip([f"Customer {identifier}" for identifier in bundle["example_ids"]], bundle["examples"]))
+EXAMPLES = dict(zip(bundle["example_names"], bundle["examples"]))
 READY = "Ready"
 
-GROUPS = {
-    "Customer": [
-        ("Age of customer", "Age"),
-        ("Sex", "Sex"),
-        ("Ctry", "Country"),
-        ("Town", "Town"),
-        ("Customer Years", "Customer years"),
-    ],
-    "Training": [
-        ("Swimming Hours per Week", "Swimming hours / week"),
-        ("Biking Hours per Week", "Biking hours / week"),
-        ("Running Hours per Week", "Running hours / week"),
-        ("Total Training Hours per Week", "Total training hours / week"),
-        ("VO2 Max", "VO₂ max"),
-        ("10k Running Time Prediction", "Predicted 10k running time"),
-        ("Calories Burned per Week", "Calories burned / week"),
-        ("Goal of Training", "Training goal"),
-        ("Preferred Training Daytime", "Preferred training time"),
-    ],
-    "Watch and service": [
-        ("Most current software update", "Latest software update (YYYY-MM-DD)"),
-        ("Support Cases of Customer", "Support cases"),
-        ("Subscription Type", "Subscription"),
-        ("Color of Watch", "Watch color"),
-        ("Synchronisation", "Synchronisation"),
-    ],
-}
 
-
-def predict(*values):
-    """Parse form values; all feature engineering stays in the saved pipeline."""
-    frame = pd.DataFrame([values], columns=COLUMNS)
-    if frame.replace("", np.nan).isna().all(axis=None):
-        raise gr.Error("Enter a customer value or select one of the examples.")
+def predict(features):
+    """Use the same prepared feature schema as the semester CSV files."""
+    if features.shape != (len(COLUMNS), 2) or features.iloc[:, 0].tolist() != COLUMNS:
+        raise gr.Error("Use all original feature names in their original order. Reset the example.")
     try:
-        frame[NUMERIC] = frame[NUMERIC].astype(float)
+        values = pd.to_numeric(features.iloc[:, 1], errors="raise").to_numpy(dtype=float)
     except (TypeError, ValueError):
-        raise gr.Error("Use numbers in numeric fields, or leave them blank.") from None
-    if np.isinf(frame[NUMERIC].to_numpy()).any():
-        raise gr.Error("Use finite numbers in numeric fields, or leave them blank.")
-    categorical = [column for column in COLUMNS if column not in NUMERIC]
-    frame[categorical] = frame[categorical].astype(object).replace("", np.nan)
-    frame[categorical] = frame[categorical].where(frame[categorical].notna(), np.nan)
+        raise gr.Error("Every prepared feature needs a numeric value.") from None
+    if not np.isfinite(values).all():
+        raise gr.Error("Every prepared feature needs a finite numeric value.")
+    categorical_groups = {}
+    for column, value in zip(COLUMNS, values):
+        if column.startswith("cat__"):
+            if value not in (0, 1):
+                raise gr.Error("One-hot category values must be 0 or 1.")
+            group = column.rsplit("_", 1)[0]
+            categorical_groups[group] = categorical_groups.get(group, 0) + value
+    if any(total > 1 for total in categorical_groups.values()):
+        raise gr.Error("Use at most one active category in each one-hot group.")
+    frame = pd.DataFrame([values], columns=COLUMNS)
     label = int(bundle["pipeline"].predict(frame)[0])
     return {0: "Older model", 1: "Latest model"}[label]
 
 
 def load_example(name):
-    row = EXAMPLES[name]
-    return [row[column] if pd.notna(row[column]) else None for column in COLUMNS] + [READY]
+    return pd.DataFrame({"Feature": COLUMNS, "Value": [EXAMPLES[name][column] for column in COLUMNS]}), READY
 
 
 def clear_prediction():
@@ -73,48 +49,48 @@ def clear_prediction():
 
 def build_demo():
     first_name = next(iter(EXAMPLES))
-    first_row = EXAMPLES[first_name]
-    components = {}
     with gr.Blocks(title="Sports Watch Classifier", analytics_enabled=False) as demo:
         gr.Markdown(
             '<p class="eyebrow">SPORTS WATCH / MODEL EXPLORER</p>\n\n'
             '# Sports Watch Classifier\n'
-            'Select a customer, adjust the inputs and run a prediction.',
+            'Explore the semester model with three original prepared test examples.',
             elem_id="app-header",
         )
         with gr.Row():
-            example = gr.Dropdown(list(EXAMPLES), value=first_name, label="Example customer", interactive=True, scale=3)
+            example = gr.Dropdown(list(EXAMPLES), value=first_name, label="Prepared example", interactive=True, scale=3)
             reset = gr.Button("Reset example", scale=1, elem_classes="reset-example")
         with gr.Row(elem_classes="prediction-layout"):
             with gr.Column(scale=3):
-                for number, (group, fields) in enumerate(GROUPS.items(), start=1):
-                    with gr.Accordion(f"{number:02d} / {group}", open=group != "Watch and service"):
-                        if group == "Training":
-                            gr.Markdown("Total hours should match the three sports. Inconsistent totals are treated as missing.")
-                        for start in range(0, len(fields), 2):
-                            with gr.Row():
-                                for column, label in fields[start:start + 2]:
-                                    value = first_row[column]
-                                    if column in NUMERIC:
-                                        component = gr.Number(value=value, label=label)
-                                    elif column in bundle["categories"]:
-                                        component = gr.Dropdown(bundle["categories"][column], value=value, label=label, allow_custom_value=True)
-                                    else:
-                                        component = gr.Textbox(value=value, label=label, placeholder="YYYY-MM-DD")
-                                    components[column] = component
+                gr.Markdown(
+                    f"### {bundle['model_name']}\n"
+                    f"Stage: **{bundle['stage']}** · Training + validation: **781 rows**\n\n"
+                    "Select an example and run the saved model. The notebook contains the full model comparison."
+                )
+                with gr.Accordion("Prepared features / optional editing", open=True):
+                    gr.Markdown(
+                        "`num__` values are already transformed, not raw measurements. "
+                        "`cat__` values are one-hot categories (0 or 1). "
+                        "Edits explore the model response; they do not demonstrate causal effects."
+                    )
+                    features = gr.Dataframe(
+                        value=load_example(first_name)[0], headers=["Feature", "Value"],
+                        datatype=["str", "number"], type="pandas", interactive=True,
+                        static_columns=[0], row_count=len(COLUMNS), column_count=2,
+                        column_widths=["78%", "22%"],
+                        max_height=340, label="Model inputs", show_label=False,
+                        buttons=[],
+                    )
             with gr.Column(scale=1, min_width=270, variant="panel", elem_classes="prediction-panel"):
                 gr.Markdown("### Predicted usage", elem_classes="section-label")
                 result = gr.Label(value=READY, label="Predicted model usage", show_label=False, elem_classes="prediction-result")
                 submit = gr.Button("Run prediction", variant="primary")
                 gr.Markdown("Classifies current watch usage. It does not forecast purchases.")
-                gr.Markdown("Blank values use training-based defaults. **Reset example** restores the original inputs.")
-        gr.Markdown("Course demonstration · Original example data · Shared IDs and unclear feature timing limit interpretation.", elem_id="app-footnote")
-        inputs = [components[column] for column in COLUMNS]
-        submit.click(predict, inputs=inputs, outputs=result, api_name="predict")
+                gr.Markdown("**Reset example** restores all original feature values.")
+        gr.Markdown("Course demonstration · Prepared semester data · Earlier preprocessing and person-level independence are not verified.", elem_id="app-footnote")
+        submit.click(predict, inputs=features, outputs=result, api_name="predict")
         for trigger in [example.change, reset.click]:
-            trigger(load_example, inputs=example, outputs=inputs + [result], api_visibility="private", queue=False)
-        for component in inputs:
-            component.input(clear_prediction, outputs=result, api_visibility="private", queue=False)
+            trigger(load_example, inputs=example, outputs=[features, result], api_visibility="private", queue=False)
+        features.input(clear_prediction, outputs=result, api_visibility="private", queue=False)
     return demo
 
 
@@ -153,6 +129,11 @@ PALETTE = {
     "button_secondary_border_color_hover": "#a0a0a0",
     "button_secondary_text_color": "#dedede",
     "button_secondary_text_color_hover": "#ffffff",
+    "table_border_color": "#303030",
+    "table_even_background_fill": "#0d0d0d",
+    "table_odd_background_fill": "#151515",
+    "table_row_focus": "#202326",
+    "table_text_color": "#ededed",
 }
 THEME = gr.themes.Base(
     primary_hue="gray", secondary_hue="gray", neutral_hue="gray",
