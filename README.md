@@ -41,7 +41,7 @@ uv run python app.py
 ```
 
 Open the local URL printed in the terminal, usually `http://127.0.0.1:7860`.
-Select an example customer, edit any values and click **Predict watch usage**.
+Select an example customer, edit any values and click **Run prediction**.
 The app loads the included `model.pkl`; it does not retrain the model. Input data is not saved.
 The demo is local; GitHub hosts the code, not a running Python service.
 
