@@ -6,7 +6,7 @@ three prepared CSV files and their existing training, validation and test split.
 
 - [Notebook](data_science.ipynb): all analysis and code in six short CRISP-DM phases.
 - [Process overview](CRISP-DM-Process-Overview.md): decisions, limitations and D2 diagrams.
-- [Gradio demo](app.py): run the saved model on three original test examples; optionally edit prepared features.
+- [Gradio explorer](app.py): compare baseline, feature selection and tuning for each model family.
 
 ## Approach
 
@@ -53,16 +53,19 @@ uv run python app.py
 ```
 
 Open the local URL printed in the terminal, usually `http://127.0.0.1:7860`.
-Select a prepared example and click **Run prediction**. Optional edits use the transformed
-numeric and one-hot values from the supplied files, not raw customer measurements.
-**Reset example** restores the original values. The app loads `model.pkl` without retraining;
-it does not save inputs. GitHub hosts the source; the demo runs locally.
+Choose a **model family** to compare its training and validation weighted F1 across
+baseline, feature selection and tuning. The chart and short reading guide make score changes
+and possible overfitting visible. Expand **How the three stages work** for the method.
+
+The app reads `results.json`, exported by the notebook. It does not train models or make
+customer predictions. Changing the display does not change the selected final model.
+GitHub hosts the source; the explorer runs locally.
 
 To reproduce the analysis, open `data_science.ipynb` in VS Code or Jupyter, select `.venv`
 as the Python kernel, use the repository root as the working directory and run all cells.
-The notebook also regenerates `model.pkl`. For a notebook editor:
+The notebook also regenerates `results.json`. For a notebook editor:
 `uv run --with jupyterlab jupyter lab`.
 
 Dependencies are declared in `pyproject.toml` and locked in `uv.lock`. Verified with Python
-3.14.4; use the locked Python 3.14 environment for the saved model.
+3.14.4; use the locked Python 3.14 environment to reproduce the analysis.
 A license has not yet been selected.

@@ -1,0 +1,316 @@
+{
+  "metric": "Weighted F1",
+  "models": [
+    "Decision tree",
+    "Random forest",
+    "Gradient boosting",
+    "Bagging",
+    "Logistic regression",
+    "Naive Bayes",
+    "kNN",
+    "MLP"
+  ],
+  "stages": [
+    "Baseline",
+    "Feature selection",
+    "Tuned"
+  ],
+  "comparison": [
+    {
+      "Model": "kNN",
+      "Stage": "Tuned",
+      "Train accuracy": 0.7760683760683761,
+      "Validation accuracy": 0.8061224489795918,
+      "Train F1": 0.767442014619865,
+      "Validation F1": 0.8018039825352125,
+      "F1 gap": -0.0343619679153474,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.0343619679153474
+    },
+    {
+      "Model": "MLP",
+      "Stage": "Baseline",
+      "Train accuracy": 1.0,
+      "Validation accuracy": 0.8010204081632653,
+      "Train F1": 1.0,
+      "Validation F1": 0.8008331508775165,
+      "F1 gap": 0.1991668491224835,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.1991668491224835
+    },
+    {
+      "Model": "Gradient boosting",
+      "Stage": "Tuned",
+      "Train accuracy": 0.8683760683760684,
+      "Validation accuracy": 0.7959183673469388,
+      "Train F1": 0.8675865706035826,
+      "Validation F1": 0.7959183673469388,
+      "F1 gap": 0.0716682032566438,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.0716682032566438
+    },
+    {
+      "Model": "Bagging",
+      "Stage": "Feature selection",
+      "Train accuracy": 0.9982905982905983,
+      "Validation accuracy": 0.7908163265306123,
+      "Train F1": 0.9982900837592688,
+      "Validation F1": 0.7916235556098687,
+      "F1 gap": 0.2066665281494,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.2066665281494
+    },
+    {
+      "Model": "Bagging",
+      "Stage": "Tuned",
+      "Train accuracy": 1.0,
+      "Validation accuracy": 0.7908163265306123,
+      "Train F1": 1.0,
+      "Validation F1": 0.7913357253193628,
+      "F1 gap": 0.2086642746806372,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.2086642746806372
+    },
+    {
+      "Model": "Logistic regression",
+      "Stage": "Baseline",
+      "Train accuracy": 0.7811965811965812,
+      "Validation accuracy": 0.7908163265306123,
+      "Train F1": 0.7794185496051277,
+      "Validation F1": 0.7901895716582851,
+      "F1 gap": -0.010771022053157386,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.010771022053157386
+    },
+    {
+      "Model": "Logistic regression",
+      "Stage": "Tuned",
+      "Train accuracy": 0.7863247863247863,
+      "Validation accuracy": 0.7908163265306123,
+      "Train F1": 0.7832343374933015,
+      "Validation F1": 0.7891820345941561,
+      "F1 gap": -0.005947697100854632,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.005947697100854632
+    },
+    {
+      "Model": "Gradient boosting",
+      "Stage": "Feature selection",
+      "Train accuracy": 0.9316239316239316,
+      "Validation accuracy": 0.7806122448979592,
+      "Train F1": 0.9312415244330137,
+      "Validation F1": 0.7808062009061668,
+      "F1 gap": 0.15043532352684685,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.15043532352684685
+    },
+    {
+      "Model": "Gradient boosting",
+      "Stage": "Baseline",
+      "Train accuracy": 0.9487179487179487,
+      "Validation accuracy": 0.7806122448979592,
+      "Train F1": 0.9483012225637019,
+      "Validation F1": 0.7808062009061668,
+      "F1 gap": 0.16749502165753505,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.16749502165753505
+    },
+    {
+      "Model": "Bagging",
+      "Stage": "Baseline",
+      "Train accuracy": 1.0,
+      "Validation accuracy": 0.7755102040816326,
+      "Train F1": 1.0,
+      "Validation F1": 0.7762282650558889,
+      "F1 gap": 0.22377173494411107,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.22377173494411107
+    },
+    {
+      "Model": "Logistic regression",
+      "Stage": "Feature selection",
+      "Train accuracy": 0.7777777777777778,
+      "Validation accuracy": 0.7704081632653061,
+      "Train F1": 0.7744444444444445,
+      "Validation F1": 0.7686144282130982,
+      "F1 gap": 0.005830016231346269,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.005830016231346269
+    },
+    {
+      "Model": "Random forest",
+      "Stage": "Baseline",
+      "Train accuracy": 1.0,
+      "Validation accuracy": 0.7704081632653061,
+      "Train F1": 1.0,
+      "Validation F1": 0.7686144282130982,
+      "F1 gap": 0.23138557178690178,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.23138557178690178
+    },
+    {
+      "Model": "Random forest",
+      "Stage": "Feature selection",
+      "Train accuracy": 1.0,
+      "Validation accuracy": 0.7653061224489796,
+      "Train F1": 1.0,
+      "Validation F1": 0.7653061224489796,
+      "F1 gap": 0.23469387755102045,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.23469387755102045
+    },
+    {
+      "Model": "Random forest",
+      "Stage": "Tuned",
+      "Train accuracy": 1.0,
+      "Validation accuracy": 0.7653061224489796,
+      "Train F1": 1.0,
+      "Validation F1": 0.7653061224489796,
+      "F1 gap": 0.23469387755102045,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.23469387755102045
+    },
+    {
+      "Model": "kNN",
+      "Stage": "Feature selection",
+      "Train accuracy": 0.8068376068376069,
+      "Validation accuracy": 0.7653061224489796,
+      "Train F1": 0.8034009477542993,
+      "Validation F1": 0.761737223815146,
+      "F1 gap": 0.041663723939153297,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.041663723939153297
+    },
+    {
+      "Model": "kNN",
+      "Stage": "Baseline",
+      "Train accuracy": 0.8017094017094017,
+      "Validation accuracy": 0.7551020408163265,
+      "Train F1": 0.7999198541571423,
+      "Validation F1": 0.7535055743288188,
+      "F1 gap": 0.04641427982832347,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.04641427982832347
+    },
+    {
+      "Model": "Decision tree",
+      "Stage": "Tuned",
+      "Train accuracy": 0.8376068376068376,
+      "Validation accuracy": 0.7397959183673469,
+      "Train F1": 0.8347176109438798,
+      "Validation F1": 0.7384206697992924,
+      "F1 gap": 0.09629694114458731,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.09629694114458731
+    },
+    {
+      "Model": "Naive Bayes",
+      "Stage": "Feature selection",
+      "Train accuracy": 0.747008547008547,
+      "Validation accuracy": 0.7295918367346939,
+      "Train F1": 0.7386475247640567,
+      "Validation F1": 0.7240733027905041,
+      "F1 gap": 0.014574221973552626,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.014574221973552626
+    },
+    {
+      "Model": "Naive Bayes",
+      "Stage": "Tuned",
+      "Train accuracy": 0.747008547008547,
+      "Validation accuracy": 0.7295918367346939,
+      "Train F1": 0.7386475247640567,
+      "Validation F1": 0.7240733027905041,
+      "F1 gap": 0.014574221973552626,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.014574221973552626
+    },
+    {
+      "Model": "Naive Bayes",
+      "Stage": "Baseline",
+      "Train accuracy": 0.7452991452991453,
+      "Validation accuracy": 0.7193877551020408,
+      "Train F1": 0.7401653412235423,
+      "Validation F1": 0.7185469863708703,
+      "F1 gap": 0.02161835485267194,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.02161835485267194
+    },
+    {
+      "Model": "MLP",
+      "Stage": "Tuned",
+      "Train accuracy": 1.0,
+      "Validation accuracy": 0.7142857142857143,
+      "Train F1": 1.0,
+      "Validation F1": 0.7147747417323799,
+      "F1 gap": 0.28522525826762013,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.28522525826762013
+    },
+    {
+      "Model": "MLP",
+      "Stage": "Feature selection",
+      "Train accuracy": 1.0,
+      "Validation accuracy": 0.7091836734693877,
+      "Train F1": 1.0,
+      "Validation F1": 0.709440777945384,
+      "F1 gap": 0.29055922205461604,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.29055922205461604
+    },
+    {
+      "Model": "Decision tree",
+      "Stage": "Baseline",
+      "Train accuracy": 1.0,
+      "Validation accuracy": 0.6785714285714286,
+      "Train F1": 1.0,
+      "Validation F1": 0.6808821593153391,
+      "F1 gap": 0.31911784068466087,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.31911784068466087
+    },
+    {
+      "Model": "Decision tree",
+      "Stage": "Feature selection",
+      "Train accuracy": 1.0,
+      "Validation accuracy": 0.6479591836734694,
+      "Train F1": 1.0,
+      "Validation F1": 0.649724665518289,
+      "F1 gap": 0.350275334481711,
+      "Convergence warnings": 0,
+      "Absolute F1 gap": 0.350275334481711
+    }
+  ],
+  "search_warnings": {
+    "Decision tree": 0,
+    "Random forest": 0,
+    "Gradient boosting": 0,
+    "Bagging": 0,
+    "Logistic regression": 0,
+    "Naive Bayes": 0,
+    "kNN": 0,
+    "MLP": 2
+  },
+  "selected": {
+    "model": "kNN",
+    "stage": "Tuned",
+    "test_accuracy": 0.738,
+    "test_f1_weighted": 0.7313082147322382
+  },
+  "rows": {
+    "Training": 585,
+    "Validation": 196,
+    "Final test": 500
+  },
+  "versions": {
+    "python": "3.14.4",
+    "numpy": "2.4.6",
+    "pandas": "3.0.3",
+    "scikit-learn": "1.9.0"
+  },
+  "input_hashes": {
+    "train_task3.csv": "9cc4dd44eddea8253788ae537bc3975cf2596bf7f2fb8a9615ec7b8e29adfafa",
+    "validation_task3.csv": "4e61617a451359afe29721c20a514bbcc9bbc0bbac018d28ef39a27494752551",
+    "final_test_task3.csv": "ac91e612b5b5c1f47f1341519a63f30a20728bc80c3a047cee27ac00d62194ee"
+  }
+}

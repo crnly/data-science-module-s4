@@ -7,7 +7,7 @@ process: "Semester Task 3 · CRISP-DM" {
   p3: "3. Data Preparation\nKeep the supplied split · check schema and values\nSeparate features and target" {link: "../data_science.ipynb#phase-3"}
   p4: "4. Modeling\nEight model families · feature selection · compact tuning\nGroup identical rows in internal CV · select on validation" {link: "../data_science.ipynb#phase-4"}
   p5: "5. Evaluation\nRefit on training + validation · evaluate 500 test rows\nExplain errors and limitations" {link: "../data_science.ipynb#phase-5"}
-  p6: "6. Deployment\nExport model.pkl · local Gradio extension\nReproduce with uv" {link: "../data_science.ipynb#phase-6"}
+  p6: "6. Deployment\nExport results.json · interactive model comparison\nExplain baseline, selection and tuning" {link: "../data_science.ipynb#phase-6"}
   p1 -> p2 -> p3 -> p4 -> p5 -> p6
   p3 -> p2: "Review data checks" {style.stroke-dash: 4}
   p5 -> p1: "Review the project objective" {style.stroke-dash: 4}

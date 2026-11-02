@@ -3,7 +3,7 @@
 This project adapts the semester **Task 3: Modeling & Validation** using three supplied,
 prepared CSV files. The [notebook](data_science.ipynb) contains the executable analysis;
 this document explains the purpose, decisions and handover between its six CRISP-DM phases.
-Gradio adds a local interface to the resulting model.
+Gradio adds an interactive view of the experiment results.
 
 ![CRISP-DM process](docs/process.svg)
 
@@ -151,29 +151,40 @@ fresh untouched benchmark. Missing person identifiers, unclear feature timing an
 preparation limit conclusions about new customers.
 
 **Output → Phase 6.** A fitted model, measured errors and stated limitations. The
-[README](README.md#data-and-results) summarizes the current run. Next, export exactly the
-evaluated model for the demonstration.
+[README](README.md#data-and-results) summarizes the current run. Next, export the
+recorded results for the interactive explorer.
 
 ## 6. Deployment
 
-**Goal.** Make the evaluated model reproducible and explorable through a small local demo.
+**Goal.** Make the modeling process understandable through a small interactive results
+explorer. Deployment here means presenting the analysis and its findings.
 
-**Steps.** Export `model.pkl` with the fitted pipeline, input schema, environment versions,
-input-file hashes and three original test feature rows without labels. Reload it and check
-that all 500 predictions match the evaluated model. Verify the three CSV checksums are unchanged.
+**Steps.** Export `results.json` with the 24 comparison records, ordered model families and
+stages, convergence-warning counts, the selected model's test summary, environment versions
+and input-file hashes. Reload the JSON and check that its comparison records and final scores
+match the notebook. Verify that the three CSV checksums are unchanged.
 
-The Gradio app loads that artifact without retraining. Select an example and run a prediction;
-an initially collapsed editor offers optional changes to the prepared values. Its numeric
-inputs retain the transformed scale. One-hot values must be binary with at most one active
-category per group. Editing inputs explores model responses and does not demonstrate causality.
+The Gradio app offers one model-family selector. For that family, a chart shows training and
+validation weighted F1 across baseline, feature selection and tuning. A short reading guide
+reports the validation-score changes and largest training–validation gap. A larger positive
+gap can indicate overfitting; small validation differences do not establish superiority.
+Convergence diagnostics remain visible for model families with warnings during tuning.
 
-**Reason.** Separating training from the interface keeps the demonstration tied to the
-evaluated model. `pyproject.toml` and `uv.lock` define its environment. The notebook remains
-the single place for analysis and training code; `app.py` supplies input checks and the UI.
+The optional **How the three stages work** explanation connects the display to Phase 4.
+The explorer uses only saved training and validation comparisons. Its model selector is a
+display filter: it does not change the final configuration selected in the notebook, retrain
+models or evaluate additional families on the final test.
 
-**Output.** A locally runnable demonstration and a reproducible notebook. If the analysis
-changes later, rerun the notebook, inspect the results and regenerate the artifact together.
-Merely restarting Gradio does not train a new model.
+**Reason.** The experiment stages are central to the original semester task. Exploring their
+recorded results is more useful for understanding that task than manually editing transformed
+customer features. A small, readable JSON file is sufficient; the app needs no serialized
+model or prediction-input processing. The notebook remains the single place for fitting and
+evaluation. `app.py` filters, plots and explains the saved comparisons.
+
+**Output.** A locally runnable model-comparison explorer and a reproducible notebook.
+`pyproject.toml` and `uv.lock` define the environment. If the analysis changes later, rerun the
+notebook and inspect the regenerated `results.json`. Restart the app to load the new results;
+restarting alone does not run the analysis.
 
 ![Technical data flow](docs/architecture.svg)
 

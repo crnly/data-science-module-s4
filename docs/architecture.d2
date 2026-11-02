@@ -10,8 +10,8 @@ choose: "Compare all stages on validation\nWeighted F1 → accuracy → absolute
 refit: "Refit the selected full pipeline\nTraining + validation · 781 rows"
 evaluation: "Evaluate the fixed model on final test\nAccuracy · weighted F1 · classification errors"
 results: "Results in data_science.ipynb\nDecisions in the CRISP-DM overview"
-artifact: "model.pkl\nFitted pipeline · schema · three prepared examples"
-app: "app.py · local Gradio extension\nSelect example · optional edits · predict"
+artifact: "results.json\n24 comparisons · diagnostics · evaluation summary"
+app: "app.py · local Gradio explorer\nOne model selector · stage comparison · explanations"
 train -> experiments
 train -> folds -> tuning
 experiments -> choose
@@ -23,8 +23,8 @@ validation -> refit: "After selection"
 refit -> evaluation
 test -> evaluation: "No selection based on test scores"
 evaluation -> results
-refit -> artifact
-test -> artifact: "Three feature rows; no targets"
-artifact -> app: "Load; no retraining"
+choose -> artifact: "All recorded training / validation comparisons"
+evaluation -> artifact: "Selected model assessment"
+artifact -> app: "Read results; no fitting or inference"
 note: "Prepared Task-3 inputs: inherited preprocessing limits\nPerson-level independence remains unverified" {shape: text}
 train -> note {style.stroke-dash: 4}
