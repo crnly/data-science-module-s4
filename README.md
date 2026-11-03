@@ -2,7 +2,7 @@
 
 ## Overview
 
-Eine Aufbereitung des Semesterprojekts „Task 3: Modeling & Validation“: Klassifikationsmodelle unterscheiden, ob Kunden das neueste Sportuhrenmodell verwenden. Grundlage sind die drei unveränderten, bereits vorbereiteten Semesterdateien mit ihrer bestehenden Aufteilung in Training, Validierung und Test. Mein Lernziel ist, den Data-Science-Prozess und seine Entscheidungen anhand von CRISP-DM nachvollziehbar zu verstehen.
+Eine Aufbereitung des Semesterprojekts „Task 3: Modeling & Validation“, das ich gemeinsam mit Marco und Dino als Gruppenarbeit umgesetzt habe. Klassifikationsmodelle unterscheiden, ob Kunden das neueste Sportuhrenmodell verwenden. Grundlage sind die drei unveränderten, bereits vorbereiteten Semesterdateien mit ihrer bestehenden Aufteilung in Training, Validierung und Test. Mein Lernziel ist, den Data-Science-Prozess und seine Entscheidungen anhand von CRISP-DM nachvollziehbar zu verstehen.
 
 ## Features
 
