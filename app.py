@@ -17,23 +17,23 @@ def compare_model(name):
     best_stage = rows.iloc[0]["Stage"]  # Exported rows retain the notebook's selection order.
     rows = rows.set_index("Stage").loc[REPORT["stages"]]
 
-    figure = Figure(figsize=(8, 3.7), facecolor="#0d0d0d", layout="constrained")
+    figure = Figure(figsize=(8, 3.7), facecolor="#FFFFFF", layout="constrained")
     axis = figure.subplots()
     scores = rows[["Train F1", "Validation F1"]].rename(
         columns={"Train F1": "Training", "Validation F1": "Validation"}
     )
-    scores.plot.bar(ax=axis, color=["#626262", "#ededed"], width=0.65, rot=0)
-    axis.set(facecolor="#0d0d0d", ylim=(0, 1.08), xlabel="", ylabel=REPORT["metric"])
-    axis.tick_params(colors="#bcbcbc")
-    axis.yaxis.label.set_color("#bcbcbc")
+    scores.plot.bar(ax=axis, color=["#FABA8A", "#D35F0A"], width=0.65, rot=0)
+    axis.set(facecolor="#FFFFFF", ylim=(0, 1.08), xlabel="", ylabel=REPORT["metric"])
+    axis.tick_params(colors="#535152")
+    axis.yaxis.label.set_color("#535152")
     for spine in axis.spines.values():
         spine.set_visible(False)
-    axis.grid(axis="y", color="#303030", linewidth=0.6)
+    axis.grid(axis="y", color="#ECEBEB", linewidth=0.6)
     axis.set_axisbelow(True)
     axis.legend(loc="upper center", bbox_to_anchor=(0.5, 1.16), ncol=2,
-                frameon=False, labelcolor="#dedede")
+                frameon=False, labelcolor="#311602")
     for bars in axis.containers:
-        axis.bar_label(bars, fmt="%.3f", padding=4, color="#ededed", fontsize=9)
+        axis.bar_label(bars, fmt="%.3f", padding=4, color="#311602", fontsize=9)
 
     selection_change = rows.loc["Feature selection", "Validation F1"] - rows.loc["Baseline", "Validation F1"]
     tuning_change = rows.loc["Tuned", "Validation F1"] - rows.loc["Feature selection", "Validation F1"]
@@ -83,24 +83,24 @@ def build_demo():
     return demo
 
 
-# A shared monochrome palette keeps light and dark browser preferences consistent.
+# D2 theme 101 (Orange Creamsicle), with the same light palette in either browser mode.
 PALETTE = {
-    "body_background_fill": "#090909", "body_text_color": "#ededed",
-    "body_text_color_subdued": "#a0a0a0", "background_fill_primary": "#0d0d0d",
-    "background_fill_secondary": "#151515", "block_background_fill": "#0d0d0d",
-    "block_border_color": "#303030", "block_label_background_fill": "transparent",
-    "block_label_text_color": "#a8a8a8", "block_title_text_color": "#dedede",
-    "input_background_fill": "#111111", "input_background_fill_hover": "#161616",
-    "input_border_color": "#373737", "input_border_color_focus": "#c2cbd1",
+    "body_background_fill": "#FFFBF7", "body_text_color": "#311602",
+    "body_text_color_subdued": "#535152", "background_fill_primary": "#FFFFFF",
+    "background_fill_secondary": "#FFF4EA", "block_background_fill": "#FFFFFF",
+    "block_border_color": "#E8D6C8", "block_label_background_fill": "transparent",
+    "block_label_text_color": "#535152", "block_title_text_color": "#311602",
+    "input_background_fill": "#FFFFFF", "input_background_fill_hover": "#FFF4EA",
+    "input_border_color": "#E8D6C8", "input_border_color_focus": "#D35F0A",
 }
 THEME = gr.themes.Base(
-    primary_hue="gray", secondary_hue="gray", neutral_hue="gray",
+    primary_hue="orange", secondary_hue="orange", neutral_hue="stone",
     font=["Arial", "Helvetica", "sans-serif"],
     font_mono=["ui-monospace", "SFMono-Regular", "Consolas", "monospace"],
     spacing_size="sm",
 ).set(
     **PALETTE, **{f"{key}_dark": value for key, value in PALETTE.items()},
-    color_accent="#c2cbd1", color_accent_soft="#202326", color_accent_soft_dark="#202326",
+    color_accent="#D35F0A", color_accent_soft="#FFE0C7", color_accent_soft_dark="#FFE0C7",
     block_radius="2px", input_radius="2px", block_shadow="none", block_shadow_dark="none",
     block_label_text_size="12px", block_label_text_weight="400", input_text_size="14px",
     input_shadow="none", input_shadow_dark="none", input_border_width="1px",
@@ -108,13 +108,13 @@ THEME = gr.themes.Base(
 )
 CSS = """
 .gradio-container { max-width: 940px !important; margin: auto; padding-top: 28px !important; }
-#app-header { border-bottom: 1px solid #303030; padding-bottom: 18px; margin-bottom: 8px; }
-#app-header .eyebrow { font: 11px ui-monospace, monospace; letter-spacing: .14em; color: #909090; }
+#app-header { border-bottom: 1px solid #E8D6C8; padding-bottom: 18px; margin-bottom: 8px; }
+#app-header .eyebrow { font: 11px ui-monospace, monospace; letter-spacing: .14em; color: #9B4207; }
 #app-header h1 { font-size: 30px !important; font-weight: 400 !important; letter-spacing: -.035em; }
-#app-header p { color: #a0a0a0; }
+#app-header p { color: #535152; }
 .gradio-container input { font-family: ui-monospace, monospace !important; }
-#app-footnote { border-top: 1px solid #303030; margin-top: 8px; padding-top: 12px; }
-#app-footnote p { font-size: 12px; color: #909090; }
+#app-footnote { border-top: 1px solid #E8D6C8; margin-top: 8px; padding-top: 12px; }
+#app-footnote p { font-size: 12px; color: #535152; }
 """
 
 if __name__ == "__main__":
