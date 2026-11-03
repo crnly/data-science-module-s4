@@ -151,7 +151,7 @@ fresh untouched benchmark. Missing person identifiers, unclear feature timing an
 preparation limit conclusions about new customers.
 
 **Output → Phase 6.** A fitted model, measured errors and stated limitations. The
-[README](README.md#data-and-results) summarizes the current run. Next, export the
+[notebook's evaluation](data_science.ipynb#phase-5) records the current run. Next, export the
 recorded results for the interactive explorer.
 
 ## 6. Deployment
