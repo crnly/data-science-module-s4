@@ -12,7 +12,8 @@ Eine Aufbereitung des Semesterprojekts „Task 3: Modeling & Validation“, das 
 - Lokaler Gradio-Explorer zum interaktiven Vergleich der gespeicherten Trainings- und Validierungsergebnisse.
 - Separate [Prozessübersicht](CRISP-DM-Process-Overview.md) mit Entscheidungen, Grenzen und D2-Diagrammen.
 
-## Tech Stack
+<details>
+<summary><strong>Tech Stack</strong></summary>
 
 | Bereich | Technologie | Verwendung |
 | --- | --- | --- |
@@ -23,7 +24,10 @@ Eine Aufbereitung des Semesterprojekts „Task 3: Modeling & Validation“, das 
 | Umgebung | uv | Abhängigkeiten installieren und über die Lockdatei festschreiben |
 | Dokumentation | Markdown, D2, Mermaid | Prozessbeschreibung und Architekturüberblicke |
 
-### Projektstruktur
+</details>
+
+<details>
+<summary><strong>Projektstruktur</strong></summary>
 
 ```text
 data-science-module-s4/
@@ -45,6 +49,8 @@ data-science-module-s4/
 ├── pyproject.toml                  # Python-Version und Abhängigkeiten
 └── uv.lock                         # Festgeschriebene Abhängigkeitsversionen
 ```
+
+</details>
 
 ## Getting Started
 
